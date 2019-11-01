@@ -1,0 +1,21 @@
+*{
+	text-align: center;
+}
+body{
+	background-color: grey;
+}
+#Comment {
+	height: 100px;
+	width: 300px;
+	border : 1px solid black;
+}
+#pScore {
+	height:50px;
+	width:100px;
+	border: 1px solid black;
+}
+#button {
+	height: 25 px;
+	width: 50px;
+	border: 1px solid black;
+}
