@@ -7,12 +7,12 @@
 </head>
 <body>
 	<a href="home.html">Home</a>
-	<h1>Add a New Professor!</h1>
+	<h1 align="center">Add a New Professor!</h1>
 	
 	<?php
 // define variables and set to empty values
 $fnameErr = $lnameErr = $deptErr = $schoolNameErr = "";
-$fname = $lname = $dept = $schoolName = $option = "";
+$fname = $lname = $dept = $schoolName = $name = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   
@@ -49,28 +49,29 @@ function test_input($data) {
 
 
 <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">  
-First Name: <input type="text" name="fname">
+<u>First Name:</u> <input type="text" name="fname">
 <span class="error">* <?php echo $fnameErr;?></span>
 <br><br>
-Last Name: <input type="text" name="lname">
+<u>Last Name:</u> <input type="text" name="lname">
 <span class="error">* <?php echo $lnameErr;?></span>
 <br><br>
-Name of School:    
+<u>Name of School:</u>   
 <input type="text" name="schoolName">
 <span class="error"><?php echo $schoolNameErr;?></span>
 <br><br>
 
-Department:  
-<input type="radio" name="dept" value="biology">Biology
-<input type="radio" name="dept" value="businessAdmin">Business Administration
-<input type="radio" name="dept" value="communication">Communications
-<input type="radio" name="dept" value="compScience">Computer Science
-<input type="radio" name="dept" value="crimJustice">Criminal Justice
-<input type="radio" name="dept" value="education">Education
-<input type="radio" name="dept" value="marketing">Marketing
-<input type="radio" name="dept" value="nursing">Nursing
-<input type="radio" name="dept" value="psychology">Phychology
-<input type="radio" name="dept" value="poliScience">Political Science
+<u>Department:</u>  
+<input type="radio" name="dept" value="Biology">Biology
+<input type="radio" name="dept" value="BusinessAdministration">Business Administration
+<input type="radio" name="dept" value="Communication">Communications
+<input type="radio" name="dept" value="ComputerScience">Computer Science
+<br>
+<input type="radio" name="dept" value="CriminalJustice">Criminal Justice
+<input type="radio" name="dept" value="Education">Education
+<input type="radio" name="dept" value="Marketing">Marketing
+<input type="radio" name="dept" value="Nursing">Nursing
+<input type="radio" name="dept" value="Psychology">Psychology
+<input type="radio" name="dept" value="PoliticalScience">Political Science
 
 <span class="error">* <?php echo $deptErr;?></span>
 <br><br>
@@ -78,17 +79,63 @@ Department:
 <input type="submit" name="submit" value="Submit">
 </form>
 
+
 <?php
-echo "<h2>Your Input:</h2>";
-echo $fname;
+$name = "$fname $lname";
+
+//function that inputs the values into database
+function inputData($name, $schoolName, $dept)
+{
+  $servername= "localhost";
+  $username= "root";
+  $password= "";
+  //create Connection to DataBase
+  $con= new mysqli($servername, $username, $password);
+  //check connection..
+    if($con->connect_error){
+      die("Connection failed:" .$con->connect_error);
+    }
+    if(!mysqli_select_db($con, 'ProfEval')){
+      echo 'Database not Selected';
+    }
+
+  //insert info from from. 
+  $sql = "INSERT INTO `ProfEval` (`ID`, `Name`, `SchoolName`, `Department`) VALUES (NULL, '$name', '$schoolName', '$dept')";
+
+  if(mysqli_query($con, $sql)){
+    echo "<br>";
+    echo 'Inserted';
+    echo "<br>";
+  }
+  else{
+    echo "<br>";
+    echo 'Not Inserted';
+    echo "<br>";
+  }
+  //resends back to HomePage on submit.
+  header("refresh:5; url=home.html");
+  $con->close();
+}
+//checks that submit button pressed and executes funtion to insert Data. 
+if(isset($_POST['submit'])){
+    if($name<>' '&& $dept<> '')
+    {
+    inputData($name, $schoolName, $dept);
+  }
+}
+
 echo "<br>";
-echo $lname;
+echo "<b>Uploaded Input:</b>";
+echo "<br>";
+echo $name;
 echo "<br>";
 echo $schoolName;
 echo "<br>";
 echo $dept;
 echo "<br>";
-echo $option;
+echo "<br>";
+
 ?>
+
 </body>
 </html>
